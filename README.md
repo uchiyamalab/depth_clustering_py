@@ -27,6 +27,8 @@ Please cite [the original author's papers](https://github.com/PRBonn/depth_clust
 
 ## License
 
+MIT License
+
 Copyright (C) 2023  T. Kamatani
 Copyright (C) 2020  I. Bogoslavskyi, C. Stachniss
 
