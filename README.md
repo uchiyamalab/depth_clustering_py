@@ -30,6 +30,7 @@ Please cite [the original author's papers](https://github.com/PRBonn/depth_clust
 MIT License
 
 Copyright (C) 2023  T. Kamatani
+
 Copyright (C) 2020  I. Bogoslavskyi, C. Stachniss
 
 Ported to Python by Takahiro Kamatani in [Uchiyama Lab, Institute of Art and Design, University of Tsukuba](https://www.geijutsu.tsukuba.ac.jp/uchiyamalab/).
