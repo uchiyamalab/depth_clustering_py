@@ -1,0 +1,44 @@
+[project]
+name = "depth-clustering"
+description = "A fast and robust algorithm to segment point clouds"
+readme = "README.md"
+version = "0.0.1"
+license = {file = "LICENSE.txt"}
+maintainers = [{name = "Takahiro Kamatani", email = "takahiro.kamatani@gmail.com"}]
+authors = [
+    {name = "Takahiro Kamatani", email = "takahiro.kamatani@gmail.com"},
+    {name = "Igor Bogoslavskyi"},
+    {name = "Cyrill Stachniss"},
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Framework :: Jupyter",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Topic :: Scientific/Engineering",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "numpy>=1.23.1",
+    "numba>=0.56.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "mayavi>=4.8.1"
+]
+
+[project.urls]
+"Source Code" = "https://github.com/uchiyamalab/depth_clustering_py/"
+"Issue Tracker" = "https://github.com/uchiyamalab/depth_clustering_py/issues/"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["depth_clustering*"]
+exclude = ["notebooks*", "tests*"]
