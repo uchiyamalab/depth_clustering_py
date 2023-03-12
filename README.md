@@ -15,7 +15,7 @@ Prerequisites:
 - numpy >= 1.23.1
 - numba >= 0.56.2
 
-You can install it with the command below:
+You can install this `depth_clustering` library with the command below:
 
 ```
 $ pip install git+https://github.com/uchiyamalab/depth_clustering_py.git@main
