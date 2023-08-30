@@ -3,7 +3,7 @@
 This is a Python port of the Depth Clustering algorithm originally written in C++. The original GitHub repository can be found at:
 - https://github.com/PRBonn/depth_clustering
 
-Please note that the current implementation lacks some features of the original code, such as `DepthGroundRemover`. We will consider porting those if there are any requests.
+While we strive to follow the original implementation closely, there are some differences in our version. Please note that the current implementation lacks some features of the original code. We will consider porting those if there are any requests.
 
 If you are comfortable with C++, we recommend using the original implementation.
 
