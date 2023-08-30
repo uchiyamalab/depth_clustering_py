@@ -39,3 +39,4 @@ jobs:
       - name: Run tests
         run: |
           python tests/test_structures.py
+          python tests/test_ground_remover.py
