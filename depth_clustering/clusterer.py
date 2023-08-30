@@ -34,7 +34,9 @@ from .linear_image_labeler import LinearImageLabeler
 @njit(fastmath=True)
 def compute_labels(input_image, params, angle_threshold):
     angle_diff = AngleDiff(input_image, params)
-    labeler = LinearImageLabeler(params.rows, params.cols, angle_threshold, angle_diff)
+    labeler = LinearImageLabeler(
+        params.rows, params.cols, angle_threshold, angle_diff
+    )
     l_mat = labeler.compute_labels(input_image)
     return l_mat
 

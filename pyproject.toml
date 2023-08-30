@@ -2,7 +2,7 @@
 name = "depth-clustering"
 description = "A fast and robust algorithm to segment point clouds"
 readme = "README.md"
-version = "0.0.1"
+version = "0.0.2"
 license = {file = "LICENSE.txt"}
 maintainers = [{name = "Takahiro Kamatani", email = "takahiro.kamatani@gmail.com"}]
 authors = [
@@ -24,6 +24,7 @@ requires-python = ">=3.8"
 dependencies = [
     "numpy>=1.23.1",
     "numba>=0.56.2",
+    "opencv-python>=4.8.0",
 ]
 
 [project.optional-dependencies]

@@ -26,6 +26,7 @@ from numba import float32, int32, uint16
 from numba.experimental import jitclass
 
 from .angle_diff import AngleDiffType
+from .simple_diff import SimpleDiffType
 
 
 @jitclass(
@@ -46,83 +47,91 @@ class PixelCoord:
         return self.row == other.row and self.col == other.col
 
 
-@jitclass(
-    [
+def create_jitclass_labeler(diff_helper_type):
+
+    spec = [
         ("rows", uint16),
         ("cols", uint16),
         ("angle_threshold", float32),
-        ("diff_helper", AngleDiffType),
+        ("diff_helper", diff_helper_type),
     ]
-)
-class LinearImageLabeler:
-    def __init__(self, rows, cols, angle_threshold, diff_helper):
 
-        self.rows = rows
-        self.cols = cols
-        self.angle_threshold = angle_threshold
-        self.diff_helper = diff_helper
+    @jitclass(spec)
+    class JittedLinearImageLabeler:
+        def __init__(self, rows, cols, angle_threshold, diff_helper):
 
-    def compute_labels(self, depth_image):
+            self.rows = rows
+            self.cols = cols
+            self.angle_threshold = angle_threshold
+            self.diff_helper = diff_helper
 
-        label_image = np.zeros((self.rows, self.cols), dtype=np.uint16)
+        def compute_labels(self, depth_image):
 
-        label = 1
-        for row in range(self.rows):
-            for col in range(self.cols):
-                if label_image[row][col] > 0:
-                    continue
-                if depth_image[row][col] < 0.005:
-                    continue
-                self.label_one_component(
-                    label_image, depth_image, label, PixelCoord(row, col)
-                )
-                label += 1
+            label_image = np.zeros((self.rows, self.cols), dtype=np.uint16)
 
-        return label_image
+            label = 1
+            for row in range(self.rows):
+                for col in range(self.cols):
+                    if label_image[row][col] > 0:
+                        continue
+                    if depth_image[row][col] < 0.005:
+                        continue
+                    self.label_one_component(
+                        label_image, depth_image, label, PixelCoord(row, col)
+                    )
+                    label += 1
 
-    @staticmethod
-    def satisfies_threshold(angle, _radian_threshold):
-        return angle > _radian_threshold
+            return label_image
 
-    def label_one_component(self, label_image, depth_image, label, start):
+        def label_one_component(self, label_image, depth_image, label, start):
 
-        labeling_queue = []
-        labeling_queue.append(start)
+            labeling_queue = []
+            labeling_queue.append(start)
 
-        while len(labeling_queue) > 0:
-            current = labeling_queue.pop()
-            current_label = label_image[current.row][current.col]
+            while len(labeling_queue) > 0:
+                current = labeling_queue.pop()
+                current_label = label_image[current.row][current.col]
 
-            if current_label > 0:
-                continue
-
-            label_image[current.row][current.col] = label
-            current_depth = depth_image[current.row][current.col]
-            if current_depth < 0.001:
-                continue
-
-            for step in (
-                PixelCoord(-1, 0),
-                PixelCoord(1, 0),
-                PixelCoord(0, -1),
-                PixelCoord(0, 1),
-            ):
-
-                neighbor = current + step
-                if neighbor.row < 0 or neighbor.row >= self.rows:
+                if current_label > 0:
                     continue
 
-                # WrapCols
-                if neighbor.col < 0:
-                    # neighbor.col = neighbor.col + neighbor.col
-                    neighbor.col = (neighbor.col + self.cols * 10) % self.cols
-                if neighbor.col >= self.cols:
-                    neighbor.col = neighbor.col % self.cols
-
-                neigh_label = label_image[neighbor.row][neighbor.col]
-                if neigh_label > 0:
+                label_image[current.row][current.col] = label
+                current_depth = depth_image[current.row][current.col]
+                if current_depth < 0.001:
                     continue
 
-                diff = self.diff_helper.diff_at(current, neighbor)
-                if self.satisfies_threshold(diff, self.angle_threshold):
-                    labeling_queue = [neighbor] + labeling_queue
+                for step in (
+                    PixelCoord(-1, 0),
+                    PixelCoord(1, 0),
+                    PixelCoord(0, -1),
+                    PixelCoord(0, 1),
+                ):
+
+                    neighbor = current + step
+                    if neighbor.row < 0 or neighbor.row >= self.rows:
+                        continue
+
+                    # WrapCols
+                    if neighbor.col < 0:
+                        # neighbor.col = neighbor.col + neighbor.col
+                        neighbor.col = \
+                            (neighbor.col + self.cols * 10) % self.cols
+                    if neighbor.col >= self.cols:
+                        neighbor.col = neighbor.col % self.cols
+
+                    neigh_label = label_image[neighbor.row][neighbor.col]
+                    if neigh_label > 0:
+                        continue
+
+                    diff = self.diff_helper.diff_at(current, neighbor)
+                    if self.diff_helper.satisfies_threshold(
+                            diff, self.angle_threshold):
+                        labeling_queue.append(neighbor)
+
+    return JittedLinearImageLabeler
+
+
+AngleDiffLinearImageLabeler = create_jitclass_labeler(AngleDiffType)
+LinearImageLabeler = AngleDiffLinearImageLabeler
+
+SimpleDiffLinearImageLabeler = create_jitclass_labeler(SimpleDiffType)

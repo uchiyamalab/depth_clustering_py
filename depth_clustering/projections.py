@@ -55,6 +55,8 @@ SpanParamsType.define(SpanParams.class_type.instance_type)
         ("v_span_params", SpanParamsType),
         ("col_angles", float32[:]),
         ("row_angles", float32[:]),
+        ("row_angles_sines", float32[:]),
+        ("row_angles_cosines", float32[:]),
     ]
 )
 class ProjectionParams:
@@ -73,6 +75,9 @@ class ProjectionParams:
 
         self.v_span_params = v_span_params
         self.row_angles = self.fill_vector(v_span_params)
+
+        self.row_angles_sines = np.sin(self.row_angles)
+        self.row_angles_cosines = np.cos(self.row_angles)
 
     @property
     def size(self):
