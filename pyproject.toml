@@ -2,7 +2,7 @@
 name = "depth-clustering"
 description = "A fast and robust algorithm to segment point clouds"
 readme = "README.md"
-version = "0.0.1"
+version = "0.0.2"
 license = {file = "LICENSE.txt"}
 maintainers = [{name = "Takahiro Kamatani", email = "takahiro.kamatani@gmail.com"}]
 authors = [

@@ -21,16 +21,33 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
-# flake8: noqa F401
+# flake8: noqa F841,E501
 
-from .angle_diff import AngleDiff
-from .clusterer import (
-    calculate_segmented_point_clouds,
-    compute_labels,
-    compute_labels_with_filtering,
-    filter_clusters,
+import unittest
+from math import radians
+
+import numpy as np
+
+from depth_clustering import (
+    ProjectionParams,
+    SpanParams,
+    DepthGroundRemover,
 )
-from .linear_image_labeler import LinearImageLabeler, PixelCoord
-from .projections import ProjectionParams, SpanParams
-from .utils import convert_spherical_to_cartesian
-from .depth_ground_remover import DepthGroundRemover
+
+
+class TestGroundRemover(unittest.TestCase):
+    def test_ground_remover(self):
+        h_span_params = SpanParams(radians(-180), radians(180), num_beams=870)
+        v_span_params = SpanParams(radians(-24), radians(2), num_beams=64)
+        params = ProjectionParams(h_span_params, v_span_params)
+
+        remover = DepthGroundRemover(params, window_size=5, ground_remove_angle=radians(5))
+
+        depth_image = np.random.rand(64, 870).astype("float32")
+        removed = remover.on_new_object_received(depth_image)
+
+        assert removed.shape == (64, 870)
+
+
+if __name__ == "__main__":
+    unittest.main()

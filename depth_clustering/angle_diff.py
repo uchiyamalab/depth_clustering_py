@@ -168,6 +168,10 @@ class AngleDiff:
 
         return mat
 
+    @staticmethod
+    def satisfies_threshold(angle, _radian_threshold):
+        return angle > _radian_threshold
+
 
 AngleDiffType = deferred_type()
 AngleDiffType.define(AngleDiff.class_type.instance_type)

@@ -21,16 +21,35 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
-# flake8: noqa F401
+from numba import deferred_type, float32
+from numba.experimental import jitclass
 
-from .angle_diff import AngleDiff
-from .clusterer import (
-    calculate_segmented_point_clouds,
-    compute_labels,
-    compute_labels_with_filtering,
-    filter_clusters,
+
+@jitclass(
+    [
+        ("source_image", float32[:, :]),
+    ]
 )
-from .linear_image_labeler import LinearImageLabeler, PixelCoord
-from .projections import ProjectionParams, SpanParams
-from .utils import convert_spherical_to_cartesian
-from .depth_ground_remover import DepthGroundRemover
+class SimpleDiff:
+    def __init__(self, source_image):
+
+        self.source_image = source_image
+
+    def diff_at(self, fr, to):
+        """
+        Substituting "from" to "fr" since "from" is a reserved word in Python
+        """
+        assert fr.row != to.row or fr.col != to.col
+
+        return abs(
+            self.source_image[fr.row][fr.col] -
+            self.source_image[to.row][to.col]
+        )
+
+    @staticmethod
+    def satisfies_threshold(value, threshold):
+        return value < threshold
+
+
+SimpleDiffType = deferred_type()
+SimpleDiffType.define(SimpleDiff.class_type.instance_type)
