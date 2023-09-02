@@ -14,7 +14,7 @@ Prerequisites:
 - Python >= 3.8
 - numpy >= 1.23.1
 - numba >= 0.56.2
-- opencv-python>=4.8.0
+- opencv-python >= 4.8.0
 
 You can install this `depth_clustering` library with the command below:
 
@@ -24,7 +24,7 @@ $ pip install git+https://github.com/uchiyamalab/depth_clustering_py.git@main
 
 ## How to use?
 
-Please refer to the [/notebooks/examples.ipynb](/notebooks/examples.ipynb).
+Please refer to the [/notebooks/examples.ipynb](/notebooks/examples.ipynb) and [/notebooks/ground-remover.ipynb](/notebooks/ground-remover.ipynb).
 
 ## Why we ported from the original C++ code to Python
 
