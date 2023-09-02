@@ -14,6 +14,7 @@ Prerequisites:
 - Python >= 3.8
 - numpy >= 1.23.1
 - numba >= 0.56.2
+- opencv-python>=4.8.0
 
 You can install this `depth_clustering` library with the command below:
 
